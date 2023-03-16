@@ -111,62 +111,65 @@ onButtonSubmit = ()=>{
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-
-
-     const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "url": IMAGE_URL
-                    }
-                }
-            }
-        ]
-    });
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
-
-    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-    // this will default to the latest version_id
-
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-        //.then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
-        .then(response => response.json()) //text())
-        .then(result => {
-          //console.log(result)
-          if(result){
-            fetch('https://pcn-smart-brain-backend.onrender.com/image',{
-
-                method : 'put',
-                headers : {'Content-Type' : 'application/json'},
-                body : JSON.stringify({
-                  id: this.state.user.id
-              })
-            })
-            .then(response => response.json())
-            .then(count=> {
-              this.setState(Object.assign(this.state.user, {entries : count}))
-            })
+  if(IMAGE_URL.length > 0){
+    const raw = JSON.stringify({
+      "user_app_id": {
+          "user_id": USER_ID,
+          "app_id": APP_ID
+      },
+      "inputs": [
+          {
+              "data": {
+                  "image": {
+                      "url": IMAGE_URL
+                  }
+              }
           }
+      ]
+  });
 
-          return this.displayFaceBox(this.calculateFaceLocation(result));
-        })
-      //  .then(result => this.calculateFaceLocation(result))
-        //.then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
-        .catch(error => console.log('error', error));
+  const requestOptions = {
+      method: 'POST',
+      headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Key ' + PAT
+      },
+      body: raw
+  };
+
+  // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
+  // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
+  // this will default to the latest version_id
+
+  fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+      //.then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+      .then(response => response.json()) //text())
+      .then(result => {
+        //console.log(result)
+        if(result){
+          fetch('https://pcn-smart-brain-backend.onrender.com/image',{
+
+              method : 'put',
+              headers : {'Content-Type' : 'application/json'},
+              body : JSON.stringify({
+                id: this.state.user.id
+            })
+          })
+          .then(response => response.json())
+          .then(count=> {
+            this.setState(Object.assign(this.state.user, {entries : count}))
+          })
+        }
+
+        return this.displayFaceBox(this.calculateFaceLocation(result));
+      })
+    //  .then(result => this.calculateFaceLocation(result))
+      //.then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
+      .catch(error => console.log('error', error));
+
+  }
+
+     
 
 
 
