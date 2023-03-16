@@ -148,7 +148,7 @@ onButtonSubmit = ()=>{
         .then(result => {
           //console.log(result)
           if(result){
-            fetch('https://pcn-smart-brain-backend.onrender.com/image',{
+            fetch('https://pcn-smart-brain-backend.onrender.com:3001/image',{
 
                 method : 'put',
                 headers : {'Content-Type' : 'application/json'},
